@@ -1,4 +1,4 @@
-package com.masteringapi;
+package com.masteringapi.attendees.rest;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
