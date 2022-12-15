@@ -1,12 +1,11 @@
 package com.masteringapi.attendees.grpc;
 
-import com.google.rpc.Code;
-import com.google.rpc.Status;
 import com.masteringapi.attendees.grpc.server.*;
 import com.masteringapi.attendees.model.Attendee;
 import com.masteringapi.attendees.model.AttendeeNotFoundException;
-import com.masteringapi.attendees.model.AttendeeResponse;
 import com.masteringapi.attendees.service.AttendeeStore;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.quarkus.grpc.GrpcService;
 import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
@@ -22,9 +21,13 @@ public class AttendeesGrpcService implements AttendeesService {
 
     private final Logger logger = LoggerFactory.getLogger(AttendeesGrpcService.class);
 
+    private final Status attendeeNotFoundStatus;
+
     @Inject
     public AttendeesGrpcService(AttendeeStore store) {
         this.store = store;
+        attendeeNotFoundStatus = Status.fromCode(Status.Code.NOT_FOUND)
+                .withDescription("Attendee Not Found");
     }
 
     @Override
@@ -46,14 +49,19 @@ public class AttendeesGrpcService implements AttendeesService {
 
     @Override
     public Uni<CreateAttendeeResponse> createAttendee(CreateAttendeeRequest request) {
-        return null;
+        CreateAttendeeResponse.Builder response = CreateAttendeeResponse.newBuilder();
+        int id = this.store.addAttendee(new com.masteringapi.attendees.model.Attendee(request.getAttendee()));
+        var attendee = com.masteringapi.attendees.grpc.server.Attendee.newBuilder().mergeFrom(request.getAttendee())
+                .setId(id)
+                .build();
+
+        return Uni.createFrom().item(response.setAttendee(attendee).build());
     }
 
     @Override
     public Uni<GetAttendeeResponse> getAttendee(GetAttendeeRequest request) {
-        GetAttendeeResponse.Builder responseBuilder = GetAttendeeResponse.newBuilder();
-
         try {
+            GetAttendeeResponse.Builder responseBuilder = GetAttendeeResponse.newBuilder();
             var attendee = this.store.getAttendee(request.getId());
             var grpcAttendee = com.masteringapi.attendees.grpc.server.Attendee.newBuilder()
                     .setId(attendee.getId())
@@ -64,18 +72,28 @@ public class AttendeesGrpcService implements AttendeesService {
             responseBuilder.setAttendee(grpcAttendee);
             return Uni.createFrom().item(responseBuilder.build());
         } catch (AttendeeNotFoundException e) {
-            //FIXME How do I propagate a failure here?
-            return null;
+            throw new StatusRuntimeException(this.attendeeNotFoundStatus);
         }
     }
 
     @Override
     public Uni<DeleteAttendeeResponse> deleteAttendee(DeleteAttendeeRequest request) {
-        return null;
+        try {
+            this.store.removeAttendee(request.getId());
+            return Uni.createFrom().item(DeleteAttendeeResponse.newBuilder().build());
+        } catch(AttendeeNotFoundException e) {
+            throw new StatusRuntimeException(this.attendeeNotFoundStatus);
+        }
     }
 
     @Override
     public Uni<UpdateAttendeeResponse> updateAttendee(UpdateAttendeeRequest request) {
-        return null;
+        try {
+            this.store.updateAttendee(request.getAttendee().getId(), new Attendee(request.getAttendee()));
+            return Uni.createFrom().item(UpdateAttendeeResponse.newBuilder()
+                    .setAttendee(request.getAttendee()).build());
+        } catch(AttendeeNotFoundException e) {
+            throw new StatusRuntimeException(this.attendeeNotFoundStatus);
+        }
     }
 }
