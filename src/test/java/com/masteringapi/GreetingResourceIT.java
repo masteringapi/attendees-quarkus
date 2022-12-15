@@ -1,4 +1,4 @@
-package com.jpgough;
+package com.masteringapi;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 

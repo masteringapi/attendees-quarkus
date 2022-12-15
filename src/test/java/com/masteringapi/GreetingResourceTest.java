@@ -1,4 +1,4 @@
-package com.jpgough;
+package com.masteringapi;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

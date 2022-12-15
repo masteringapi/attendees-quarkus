@@ -1,4 +1,4 @@
-package com.jpgough;
+package com.masteringapi.attendees.rest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
