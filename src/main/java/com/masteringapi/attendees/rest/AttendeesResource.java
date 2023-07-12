@@ -4,11 +4,12 @@ import com.masteringapi.attendees.model.Attendee;
 import com.masteringapi.attendees.model.AttendeeNotFoundException;
 import com.masteringapi.attendees.model.AttendeeResponse;
 import com.masteringapi.attendees.service.AttendeeStore;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+
 import java.net.URI;
 import java.util.ArrayList;
 

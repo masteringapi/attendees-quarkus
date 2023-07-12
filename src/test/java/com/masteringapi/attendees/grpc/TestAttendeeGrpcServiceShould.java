@@ -14,8 +14,8 @@ import com.masteringapi.attendees.model.AttendeeNotFoundException;
 import com.masteringapi.attendees.service.AttendeeStore;
 import io.grpc.StatusRuntimeException;
 import io.quarkus.grpc.GrpcClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
