@@ -2,8 +2,8 @@ package com.masteringapi.attendees.service;
 
 import com.masteringapi.attendees.model.Attendee;
 import com.masteringapi.attendees.model.AttendeeNotFoundException;
+import jakarta.enterprise.context.ApplicationScoped;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
