@@ -1,0 +1,63 @@
+---
+asyncapi: 3.0.0
+info:
+  title: attendees-quarkus API
+  version: 1.0.0-SNAPSHOT
+servers:
+  dev:
+    host: localhost:8080
+    protocol: ws
+    description: Local dev server
+channels:
+  attendeeUpdates:
+    address: /ws/attendees
+    tags:
+      - name: Attendees Resource
+    messages:
+      AttendeeUpdate: 
+        $ref: '#/components/messages/AttendeeUpdate'
+
+operations: 
+  attendeeUpdateListener:
+    title: Attendee updates
+    summary: Receive notifications of new attendees.
+    description: A longer description
+    channel:
+      $ref: '#/channels/attendeeUpdates'
+    action: receive
+    messages:
+      - $ref: '#/channels/attendeeUpdates/messages/AttendeeUpdate'
+
+components:
+  messages:
+    AttendeeUpdate: 
+      summary: Update published when a new attendee joins
+      payload: 
+        $ref: '#/components/schemas/Attendee'
+
+  schemas:
+    Attendee:
+      required:
+      - givenName
+      - surname
+      - email
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        givenName:
+          maxLength: 35
+          type: string
+        surname:
+          maxLength: 35
+          type: string
+        email:
+          maxLength: 254
+          type: string
+      examples:
+        - payload:
+            id: 123
+            givenName: John
+            surname: Doe 
+            email: john@johndoe.com
