@@ -64,17 +64,4 @@ public class AttendeesResource {
             return RestResponse.notFound();
         }
     }
-
-    @PUT
-    @Path("attendees/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public RestResponse<Attendee> updateAttendee(Integer id, Attendee attendee) {
-        try {
-            this.store.updateAttendee(id, attendee);
-            return RestResponse.noContent();
-        } catch (AttendeeNotFoundException e) {
-            return RestResponse.notFound();
-        }
-    }
 }

@@ -1,11 +1,18 @@
 package com.masteringapi.attendees.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
-public class Attendee {
+@Entity
+@Table(name = "attendee")
+public class Attendee extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     public Attendee() {

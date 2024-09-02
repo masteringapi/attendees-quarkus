@@ -88,12 +88,6 @@ public class AttendeesGrpcService implements AttendeesService {
 
     @Override
     public Uni<UpdateAttendeeResponse> updateAttendee(UpdateAttendeeRequest request) {
-        try {
-            this.store.updateAttendee(request.getAttendee().getId(), new Attendee(request.getAttendee()));
-            return Uni.createFrom().item(UpdateAttendeeResponse.newBuilder()
-                    .setAttendee(request.getAttendee()).build());
-        } catch(AttendeeNotFoundException e) {
-            throw new StatusRuntimeException(this.attendeeNotFoundStatus);
-        }
+        return null;
     }
 }
