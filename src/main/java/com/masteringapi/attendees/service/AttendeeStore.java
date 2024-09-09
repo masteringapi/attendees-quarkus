@@ -3,18 +3,11 @@ package com.masteringapi.attendees.service;
 import com.masteringapi.attendees.model.Attendee;
 import com.masteringapi.attendees.model.AttendeeNotFoundException;
 import com.masteringapi.attendees.websocket.AttendeeUpdateSocket;
-import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
-import javax.sql.DataSource;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @ApplicationScoped
 public class AttendeeStore {
@@ -44,6 +37,7 @@ public class AttendeeStore {
     public int addAttendee(Attendee attendee) {
         attendee.setId(null);
         attendee.persist();
+        this.attendeeUpdateSocket.broadcastNewAttendee(attendee);
         return attendee.getId();
     }
 

@@ -12,12 +12,15 @@ COPY src /code/src
 RUN ./mvnw package -Pnative
 
 ## Stage 2 : create the docker final image
-FROM quay.io/quarkus/quarkus-micro-image:2.0
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
 WORKDIR /work/
+RUN microdnf install -y bash nc && microdnf clean all
+
 COPY --chmod=755 --chown=1001:root --from=build /code/target/*-runner /work/application
+COPY --chmod=755 scripts/wait-for-it.sh /work/scripts/wait-for-it.sh
 
 EXPOSE 8080
 EXPOSE 9000
 USER 1001
 
-CMD ["./application", "-Dquarkus.http.host=0.0.0.0", "-Dquarkus.http.port=8080", "-Dquarkus.grpc.server.port=9000"]
+CMD ["sh", "-c", "/work/scripts/wait-for-it.sh db:5432 -- ./application -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -Dquarkus.grpc.server.port=9000"]
