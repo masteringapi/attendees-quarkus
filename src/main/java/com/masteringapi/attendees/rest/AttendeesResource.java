@@ -5,6 +5,8 @@ import com.masteringapi.attendees.model.AttendeeNotFoundException;
 import com.masteringapi.attendees.model.AttendeeResponse;
 import com.masteringapi.attendees.service.AttendeeStore;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.reactive.RestResponse;
@@ -45,7 +47,7 @@ public class AttendeesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("attendees")
-    public RestResponse<Object> createAttendee(Attendee attendee) {
+    public RestResponse<Object> createAttendee(@NotNull @Valid Attendee attendee) {
         int id = this.store.addAttendee(attendee);
         URI uri = URI.create("/attendees/" + id);
         return RestResponse.ResponseBuilder.created(uri).build();
