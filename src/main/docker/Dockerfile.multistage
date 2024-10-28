@@ -12,7 +12,7 @@ COPY src /code/src
 RUN ./mvnw package -Pnative
 
 ## Stage 2 : create the docker final image
-FROM quay.io/quarkus/quarkus-micro-image:2.0
+FROM quay.io/quarkus/quarkus-micro-image:2.0-2024-10-23
 WORKDIR /work/
 COPY --chmod=755 --chown=1001:root --from=build /code/target/*-runner /work/application
 
